@@ -68,12 +68,12 @@ function Defense(mode)
               v.RotVelocity = Vector3.new(0,0,0)
             end
           end
-        game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = PlayerToDefend.Character:WaitForChild("HumanoidRootPart").CFrame * CFrame.new(0,2,-2)
+        game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = PlayerToDefend.Character:WaitForChild("HumanoidRootPart").CFrame * CFrame.new(0,3.5,-2.5)
       until CurrentlyDefensing == false or game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid").Health == 0
     end)
-    repeat task.wait(.1)
-      for i,v in pairs(workspace.Room.Enemies:GetChildren()) do
-        if v and v:FindFirstChildOfClass("Humanoid") and v:FindFirstChildOfClass("Humanoid").Name == "Enemy" and not (v.Name:find("Friendly") or v.Name:find("Friend")) and IsNetworkOwnerOf(v:WaitForChild("HumanoidRootPart")) then
+    repeat task.wait(.198)
+      for i,v in pairs(workspace:GetDescendants()) do
+        if v and v:IsA("Humanoid") and v.Name == "Enemy" and not (v.Parent.Name:find("Friendly") or v.Parent.Name:find("Friend")) then
             v.Health = 0
         end
       end
@@ -90,26 +90,22 @@ function TakeCircuits(mode)
   if CurrentlyTakingCircuits == true then
     for _,c in pairs(workspace:GetChildren()) do
       if c and c.Parent and c:IsA("UnionOperation") and c.Name == "Circuit" then
-        task.spawn(function()
           local rng = tostring(math.random(1,9999999999))
           c.Name = rng
           c.CanCollide = false
           repeat task.wait()
             c.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
           until workspace:FindFirstChild(rng) == nil
-        end)
       end
     end
     CircuitsConnection = workspace.ChildAdded:Connect(function(c)
         if c and c.Parent and c:IsA("UnionOperation") and c.Name == "Circuit" then
-          task.spawn(function()
             local rng = tostring(math.random(1,9999999999))
             c.Name = rng
             c.CanCollide = false
             repeat task.wait()
               c.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
             until workspace:FindFirstChild(rng) == nil
-          end)
         end
     end)
   elseif CurrentlyTakingCircuits == false then
@@ -123,13 +119,12 @@ end
 function Commands(message)
   if message:match("-! info") then
     CreateMSG([[All command list:
-1. ''-! help'' - list of commands.
+1. ''-! info'' - list of commands.
 2. ''-! target (plr name here)'' - name of player that will be defensed.
 3. ''-! defense'' - start defensing player.
-4. ''-! undefense'' - stop defensing player.
+4. ''-! undefense'' or ''-! stopdefense'' - stop defensing player.
 5. ''-! ccaura'' - start loop picking up circuits. (money)
-6. ''-! unccaura'' - stop loop picking up circuits. (money)
-["..tostring(math.random(1,99)).."]]])
+6. ''-! unccaura'' or ''-! stopccaura'' - stop loop picking up circuits. (money)]])
     
   elseif message:match("-! target (%a+)") then
     local targetchoosen = getPlrName(message:match("-! target (%a+)"))
@@ -144,7 +139,7 @@ function Commands(message)
         Defense(true)
     end)
 
-  elseif message:match("-! undefense") then
+  elseif (message:match("-! undefense") or message:match("-! stopdefense")) then
     pcall(function()
         CreateMSG("Defense is turned off! ["..tostring(math.random(1,99)).."]")
         Defense(false)
@@ -156,7 +151,7 @@ function Commands(message)
         TakeCircuits(true)
       end)
 
-  elseif message:match("-! unccaura") then
+  elseif (message:match("-! unccaura") or message:match("-! stopccaura")) then
     pcall(function()
 CreateMSG("Circuits aura is turned off! ["..tostring(math.random(1,99)).."]")
         TakeCircuits(false)
