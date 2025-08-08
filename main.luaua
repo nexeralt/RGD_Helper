@@ -121,7 +121,7 @@ function TakeCircuits(mode)
 end
 
 function Commands(message)
-  if message:match("-! help") then
+  if message:match("-! info") then
     CreateMSG([[All command list:
 1. ''-! help'' - list of commands.
 2. ''-! target (plr name here)'' - name of player that will be defensed.
@@ -129,37 +129,37 @@ function Commands(message)
 4. ''-! undefense'' - stop defensing player.
 5. ''-! ccaura'' - start loop picking up circuits. (money)
 6. ''-! unccaura'' - stop loop picking up circuits. (money)
-("..tostring(math.random(1,99))..")]])
+["..tostring(math.random(1,99)).."]]])
     
   elseif message:match("-! target (%a+)") then
     local targetchoosen = getPlrName(message:match("-! target (%a+)"))
     if targetchoosen then
       PlayerToDefend = targetchoosen
-      CreateMSG("Target Choosen: "..tostring(targetchoosen.Name).." ("..tostring(math.random(1,99))..")")
+      CreateMSG("Target Choosen: "..tostring(targetchoosen.Name).." ["..tostring(math.random(1,99)).."]")
     end
 
   elseif message:match("-! defense") then
     pcall(function()
+        CreateMSG("Defense is turned on! ["..tostring(math.random(1,99)).."]")
         Defense(true)
-        CreateMSG("Defense is turned on! ("..tostring(math.random(1,99))..")")
     end)
 
   elseif message:match("-! undefense") then
     pcall(function()
+        CreateMSG("Defense is turned off! ["..tostring(math.random(1,99)).."]")
         Defense(false)
-        CreateMSG("Defense is turned off! ("..tostring(math.random(1,99))..")")
       end)
 
   elseif message:match("-! ccaura") then
     pcall(function()
+        CreateMSG("Circuits aura is turned on! ["..tostring(math.random(1,99)).."]")
         TakeCircuits(true)
-        CreateMSG("Circuits aura is turned on! ("..tostring(math.random(1,99))..")")
       end)
 
   elseif message:match("-! unccaura") then
     pcall(function()
+CreateMSG("Circuits aura is turned off! ["..tostring(math.random(1,99)).."]")
         TakeCircuits(false)
-        CreateMSG("Circuits aura is turned off! ("..tostring(math.random(1,99))..")")
       end)
     
   end
@@ -172,4 +172,4 @@ game:GetService("Players").PlayerAdded:Connect(function(v)
 v.Chatted:Connect(Commands)
 end)
 
-CreateMSG("RGD - Helper Loaded. Write ''-! help'' in chat for more info. ("..tostring(math.random(1,99))..")")
+CreateMSG("RGD - Helper Loaded. Write ''-! info'' in chat for more info. ("..tostring(math.random(1,99))..")")
