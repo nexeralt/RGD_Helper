@@ -1,10 +1,6 @@
 function CreateMSG(msg)
   local msg = tostring(msg)
-  if game:GetService("TextChatService").ChatVersion == Enum.ChatVersion.LegacyChatService then
-    game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(message, "All")
-  else
-    game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync(message)
-  end
+  game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync(msg)
 end
 
 function getPlrName(name)
@@ -75,10 +71,10 @@ function Defense(mode)
         game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = PlayerToDefend.Character:WaitForChild("HumanoidRootPart").CFrame * CFrame.new(0,2,-2)
       until CurrentlyDefensing == false or game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid").Health == 0
     end)
-    repeat task.wait(1)
+    repeat task.wait(.1)
       for i,v in pairs(workspace.Room.Enemies:GetChildren()) do
         if v and v:FindFirstChildOfClass("Humanoid") and v:FindFirstChildOfClass("Humanoid").Name == "Enemy" and not (v.Name:find("Friendly") or v.Name:find("Friend")) and IsNetworkOwnerOf(v:WaitForChild("HumanoidRootPart")) then
-            v:ChangeState(Enum.HumanoidStateType.Dead)
+            v.Health = 0
         end
       end
     until CurrentlyDefensing == false or game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid").Health == 0
@@ -131,28 +127,40 @@ function Commands(message)
 2. ''-! target (plr name here)'' - name of player that will be defensed.
 3. ''-! defense'' - start defensing player.
 4. ''-! undefense'' - stop defensing player.
-5. ''-! pickup'' - start loop picking up circuits. (money)
-6. ''-! unpickup'' - stop loop picking up circuits. (money)
+5. ''-! ccaura'' - start loop picking up circuits. (money)
+6. ''-! unccaura'' - stop loop picking up circuits. (money)
 ("..tostring(math.random(1,99))..")]])
     
   elseif message:match("-! target (%a+)") then
     local targetchoosen = getPlrName(message:match("-! target (%a+)"))
     if targetchoosen then
-      PlayerToDefend = target
-      CreateMSG("Target Choosen: "..tostring(target.Name).." ("..tostring(math.random(1,99))..")")
+      PlayerToDefend = targetchoosen
+      CreateMSG("Target Choosen: "..tostring(targetchoosen.Name).." ("..tostring(math.random(1,99))..")")
     end
 
   elseif message:match("-! defense") then
-    pcall(function() Defense(true) CreateMSG("Defense is turned on! ("..tostring(math.random(1,99))..")") end)
+    pcall(function()
+        Defense(true)
+        CreateMSG("Defense is turned on! ("..tostring(math.random(1,99))..")")
+    end)
 
   elseif message:match("-! undefense") then
-    pcall(function() Defense(false) CreateMSG("Defense is turned off! ("..tostring(math.random(1,99))..")") end)
+    pcall(function()
+        Defense(false)
+        CreateMSG("Defense is turned off! ("..tostring(math.random(1,99))..")")
+      end)
 
-  elseif message:match("-! pickup") then
-    pcall(function() TakeCircuits(true) CreateMSG("Circuits aura is turned on! ("..tostring(math.random(1,99))..")") end)
+  elseif message:match("-! ccaura") then
+    pcall(function()
+        TakeCircuits(true)
+        CreateMSG("Circuits aura is turned on! ("..tostring(math.random(1,99))..")")
+      end)
 
-  elseif message:match("-! unpickup") then
-    pcall(function() TakeCircuits(false) CreateMSG("Circuits aura is turned off! ("..tostring(math.random(1,99))..")") end)
+  elseif message:match("-! unccaura") then
+    pcall(function()
+        TakeCircuits(false)
+        CreateMSG("Circuits aura is turned off! ("..tostring(math.random(1,99))..")")
+      end)
     
   end
 end
